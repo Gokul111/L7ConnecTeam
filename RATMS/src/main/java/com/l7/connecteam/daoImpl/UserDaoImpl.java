@@ -41,7 +41,6 @@ public class UserDaoImpl implements UserDao {
 		try {
 			con = connectionManager.getConnection();
 			String sql = new QueryManager().getQuery("ifUserExists");
-			sql="";
 			stmt = con.prepareStatement(sql);
 			stmt.setString(1, userDataObj.getUsername());
 			rs = stmt.executeQuery();
