@@ -23,20 +23,11 @@ public class loginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public loginServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		Cookie[] cookie = request.getCookies();
 		String userName = "";
 		String password = "";
@@ -65,7 +56,6 @@ public class loginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		String userName = "";
 		String password = "";
@@ -81,11 +71,9 @@ public class loginServlet extends HttpServlet {
 		try {
 			userDataObj = userObj.userLogin(userDataObj);
 		} catch (UIException e) {
-			// TODO Auto-generated catch block
 			isloginSuccess=false;
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			isloginSuccess=false;
 			e.printStackTrace();
 		}
@@ -110,18 +98,6 @@ public class loginServlet extends HttpServlet {
 		else {
 			getServletConfig().getServletContext().getRequestDispatcher("/homeError.jsp").forward(request, response);
 		}
-//		if (request.getParameter("Logout") != null) {
-//			System.out.println("here");
-//			Cookie cUserName = new Cookie("usercookie", userName.trim());
-//			Cookie cPassword = new Cookie("passwordcookie", password);
-//			Cookie cRememberMe = new Cookie("remembermecookie", rememberMe);
-//			cUserName.setMaxAge(0);
-//			cPassword.setMaxAge(0);
-//			cRememberMe.setMaxAge(0);
-//			doGet(request, response);
-//			// getServletConfig().getServletContext().getRequestDispatcher("/Login.jsp").forward(request,
-//			// response);
-//		}
 
 	}
 
