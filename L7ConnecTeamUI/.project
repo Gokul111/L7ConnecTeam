@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ReporGenerator_Dynamic</name>
+	<name>L7ConnecTeamUI</name>
 	<comment></comment>
 	<projects>
-		<project>L7ConnecTeam</project>
+		<project>L7ConnecTeamUI</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
