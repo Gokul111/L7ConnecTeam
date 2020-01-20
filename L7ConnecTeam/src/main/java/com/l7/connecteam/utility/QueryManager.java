@@ -16,7 +16,7 @@ public class QueryManager {
 	
 	public static String getQuery(String queryKey) {
 		String sql = null;
-		File file = new File("E:\\programs\\L7ConnecTeam\\src\\main\\java\\com\\l7\\connecteam\\utility\\Query.properties");
+		File file = new File("D:\\Eclipse\\L7ConnecTeam\\L7ConnecTeam\\src\\main\\java\\com\\l7\\connecteam\\utility\\Query.properties");
 		FileInputStream inStream;
 		try {
 			inStream = new FileInputStream(file);
