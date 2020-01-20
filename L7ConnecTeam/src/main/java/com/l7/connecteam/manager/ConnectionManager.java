@@ -23,7 +23,6 @@ public class ConnectionManager {
 	private static String DBUrl=null;
 	private static String userName=null;
 	private static String password=null;
-	
 	private static Connection connection = null;
 
 	/**
