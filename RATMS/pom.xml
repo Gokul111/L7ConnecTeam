@@ -3,36 +3,24 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.l7.ratms</groupId>
-	<artifactId>core</artifactId>
+	<groupId>com.l7.ratraining</groupId>
+	<artifactId>com</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>RATMS</name>
+	<name>ReportGen_Controller</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>12</maven.compiler.target>
-    <maven.compiler.source>12</maven.compiler.source>
 	</properties>
-	
-    <build>
-      <resources>
-        <resource>
-            <directory>src/main/java</directory>
-            <includes>
-                <include>**/*.properties</include>
-            </includes>
-        </resource>
-    </resources>
-    </build>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.46</version>	
+			<version>5.0.2</version>
 		</dependency>
 
 
@@ -60,7 +48,8 @@
 			<version>2.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		
+
+
 
 	</dependencies>
 </project>
