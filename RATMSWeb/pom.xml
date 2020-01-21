@@ -45,7 +45,7 @@
 					<server>maven-tomcat-war-deployment-server</server>
 					
 					<!-- <username>war-deployer</username> <password>maven-tomcat-plugin</password> -->
-					<path>/retail</path>
+					<path>/ratms</path>
 					<update>true</update>
 				</configuration>
 			</plugin>
