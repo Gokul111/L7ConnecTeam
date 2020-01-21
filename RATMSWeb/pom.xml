@@ -13,6 +13,14 @@
 		<maven.compiler.source>12</maven.compiler.source>
 	</properties>
 	<build>
+	<resources>
+        <resource>
+            <directory>src</directory>
+            <includes>
+                <include>**/*.properties</include>
+            </includes>
+        </resource>
+        </resources>
 		<sourceDirectory>src</sourceDirectory>
 	      
 		<plugins>

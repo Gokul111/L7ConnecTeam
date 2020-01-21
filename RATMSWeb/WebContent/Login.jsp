@@ -38,7 +38,7 @@
 
 						<div class="p-b-30">
 							<div class="form-checkbox">
-								<input class="input-checkbox" type="checkbox" name="rememberMe">
+								<input type="checkbox" name="rememberMe">
 								<label class="label-checkbox" for="ckb"><fmt:message
 										key="rememberLabel"></fmt:message></label>
 							</div>
