@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration status="debug">
+    <Properties>
+        <Property name="basePath">./System_Log</Property>
+    </Properties>
+ 
+    <Appenders>
+        <RollingFile name="fileLogger" fileName="${basePath}/app-info.log" filePattern="${basePath}/app-info-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss} [%t] %l -> %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 KB" />
+            </Policies>
+        </RollingFile>
+ 
+       
+    </Appenders>
+    <Loggers>
+        <Logger name="com.l7.connecteam.utility" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.controller" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.dao" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.daoImpl" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.excel.dto" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.excel.reader" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.dto" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.exception" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.serviceImpl" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.service" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Logger name="com.l7.connecteam.manager" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug" />
+        </Logger>
+        <Root level="debug" additivity="false">
+            <appender-ref ref="Rolling"/>
+        </Root>
+    </Loggers>
+</Configuration>

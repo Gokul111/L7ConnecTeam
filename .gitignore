@@ -4,3 +4,13 @@ build/**
 README.md
 .settings/**
 *.class
+RATMS/.settings/
+RATMS/target/
+RATMSBuild/.settings/
+RATMSBuild/bin/
+RATMSBuild/.project/
+RATMSWeb/.settings/
+RATMSWeb/target/
+RATMSWeb/.classpath/
+RATMSWeb/.project/
+RATMSWeb/bin/
