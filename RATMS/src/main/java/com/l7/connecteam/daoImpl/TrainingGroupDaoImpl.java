@@ -17,14 +17,14 @@ import com.l7.connecteam.manager.ConnectionManager;
 import com.l7.connecteam.utility.QueryManager;
 
 /**
- * @author soumya.raj
- * This class implements the DAO class for training group
+ * @author soumya.raj This class implements the DAO class for training group
  */
 public class TrainingGroupDaoImpl implements TrainingGroupDao {
 	Logger logger = Logger.getLogger(TrainingGroupDaoImpl.class.getName());
 
 	/**
 	 * Checks if a training group exists in DB or not
+	 * 
 	 * @param trainDataObj
 	 * @return
 	 * @throws UIException
@@ -35,7 +35,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			con = connectionManager.getConnection();
 			final String sql = new QueryManager().getQuery("ifTrainingGroupExists");
@@ -80,13 +80,15 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 
 	/**
 	 * Writes a training group's data to DB if not already exists
+	 * 
 	 * @param trainDataObj
 	 * @param userDataObj
 	 * @return
 	 * @throws UIException
 	 * @throws SQLException
 	 */
-	public TrainingGroupDto createTrainingGroup(TrainingGroupDto trainDataObj, UserDto userDataObj) throws UIException, SQLException {
+	public TrainingGroupDto createTrainingGroup(TrainingGroupDto trainDataObj, UserDto userDataObj)
+			throws UIException, SQLException {
 		ConnectionManager connectionManager = new ConnectionManager();
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -94,7 +96,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 		int trainTypeID = 0;
 		int ifCreated = 0;
 		final String coursePlan = "Plan path details";
-		
+
 		try {
 			con = connectionManager.getConnection();
 			final String sql = new QueryManager().getQuery("createTrainingGrp");
@@ -146,6 +148,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 
 	/**
 	 * Sets relation between user and respective training group in DB
+	 * 
 	 * @param userDataObj
 	 * @param trainID
 	 * @return
@@ -155,11 +158,11 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 	public boolean setUserTrainingRel(UserDto userDataObj, int trainID) throws UIException, SQLException {
 		ConnectionManager connectionManager = new ConnectionManager();
 		Connection con = null;
-		PreparedStatement stmt=null;
+		PreparedStatement stmt = null;
 		int ifCreated = 0;
 		int roleID = 0;
-		final int statusID=1;
-		
+		final int statusID = 1;
+
 		try {
 			con = connectionManager.getConnection();
 			final String sql = new QueryManager().getQuery("setUserTrainingGrpRel");
@@ -175,8 +178,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 				stmt.setInt(3, roleID);
 				stmt.setInt(4, statusID);
 				ifCreated = stmt.executeUpdate();
-			}
-			else {
+			} else {
 				logger.info("UserDto training group relation already exists");
 			}
 		} catch (SQLException e) {
@@ -204,19 +206,20 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 
 	/**
 	 * Checks if user training group relation exists in DB or not
+	 * 
 	 * @param userID
 	 * @param trainID
 	 * @return
 	 * @throws UIException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public boolean ifUserTrainRelExists(int userID, int trainID) throws UIException, SQLException {
 		ConnectionManager connectionManager = new ConnectionManager();
 		Connection con = null;
-		PreparedStatement stmt=null;
-		ResultSet rs=null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		boolean ifRelExists = false;
-		
+
 		try {
 			con = connectionManager.getConnection();
 			final String sql = new QueryManager().getQuery("ifUserTrainRelExists");
@@ -234,7 +237,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 			logger.info(e.getMessage());
 			throw new UIException("Connection temporarily unavailable");
 		} finally {
-			if(rs!=null) {
+			if (rs != null) {
 				rs.close();
 			}
 			if (stmt != null) {
@@ -254,6 +257,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 
 	/**
 	 * Returns the training type ID for a training
+	 * 
 	 * @return
 	 * @throws UIException
 	 * @throws SQLException
@@ -264,7 +268,7 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		int trainTypeID = 0;
-		
+
 		try {
 			con = connectionManager.getConnection();
 			final String sql = new QueryManager().getQuery("getTrainTypeID");
@@ -294,8 +298,89 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 					throw new UIException("Connection temporarily unavailable");
 				}
 			}
-			
+
 		}
 		return trainTypeID;
 	}
+	
+	
+	/**To add Course plan path uploaded by valid user to corresponding training group.
+	 * @param trainingGroupID
+	 * @param coursePlanPath
+	 * @return
+	 * @throws SQLException
+	 */
+	public int addcoursePlan(int trainingGroupID, String coursePlanPath) throws SQLException {
+		ConnectionManager connectionManager = new ConnectionManager();
+		Connection con = null;
+		PreparedStatement stmt = null, fetchStmt = null;
+		ResultSet res;
+		int status = 0;
+		String sql;
+		try {
+			con = connectionManager.getConnection();
+			sql = "SELECT training_group_name FROM training_group WHERE training_group_id=?";
+			fetchStmt = con.prepareStatement(sql);
+			fetchStmt.setInt(1, trainingGroupID);
+			res = fetchStmt.executeQuery();
+			if (res.next())
+				coursePlanPath = coursePlanPath + "\\" + res.getString("training_group_name");
+
+			sql = "UPDATE training_group SET course_plan_path=? WHERE training_group_id=?;";
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, coursePlanPath);
+			stmt.setInt(2, trainingGroupID);
+			status = stmt.executeUpdate();
+		} catch (DBDownException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null && stmt != null) {
+				con.close();
+				stmt.close();
+			}
+		}
+
+		return status;
+	}
+
+	
+	/**To delete course plan path of a training group.
+	 * @param trainingGroupID
+	 * @return
+	 * @throws SQLException
+	 */
+	public int deleteCoursePlan(int trainingGroupID) throws SQLException {
+		ConnectionManager connectionManager = new ConnectionManager();
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int status = 0;
+		String sql;
+		try {
+			con = connectionManager.getConnection();
+			sql = "UPDATE training_group SET course_plan_path='/' WHERE training_group_id=?;";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, trainingGroupID);
+			status = stmt.executeUpdate();
+		} catch (DBDownException e) {
+
+		} finally {
+			if (con != null && stmt != null) {
+				con.close();
+				stmt.close();
+			}
+		}
+
+		return status;
+	}
+
+	public static void main(String[] args) {
+		TrainingGroupDaoImpl obj = new TrainingGroupDaoImpl();
+		try {
+			int status = obj.addcoursePlan(1, "E:\\Git\\Project\\L7ConnecTeam\\L7ConnecTeam");
+			System.out.println(status + " row(s) updated");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
