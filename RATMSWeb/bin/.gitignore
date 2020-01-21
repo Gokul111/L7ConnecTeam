@@ -1,0 +1,7 @@
+target/**
+build/**
+.classpath
+README.md
+.settings/**
+*.class
+/target/

@@ -2,7 +2,9 @@ package com.l7.loginServlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
+import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -12,8 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.l7.connecteam.controller.UserController;
+import com.l7.connecteam.daoImpl.UserDaoImpl;
+import com.l7.connecteam.dto.RoleDto;
 import com.l7.connecteam.dto.UserDto;
 import com.l7.connecteam.exception.UIException;
+import com.l7.connecteam.serviceImpl.UserServiceImpl;
 
 /**
  * Servlet implementation class loginServlet
@@ -28,6 +33,7 @@ public class loginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		Cookie[] cookie = request.getCookies();
 		String userName = "";
 		String password = "";
@@ -70,6 +76,8 @@ public class loginServlet extends HttpServlet {
 		userDataObj.setPassword(password);
 		try {
 			userDataObj = userObj.userLogin(userDataObj);
+			
+			
 		} catch (UIException e) {
 			isloginSuccess=false;
 			e.printStackTrace();
@@ -90,9 +98,14 @@ public class loginServlet extends HttpServlet {
 				response.addCookie(cPassword);
 				response.addCookie(cRememberMe);
 			}
+			
+			
+		//	userDaoImpl.getRoleByUser(userDataObj);
 			HttpSession session = request.getSession();
 			session.setAttribute("userName", userName);
-			session.setAttribute("userData", userDataObj);
+			session.setAttribute("user", userDataObj);
+			System.out.println(userDataObj);
+			
 			getServletConfig().getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
 		}
 		else {
