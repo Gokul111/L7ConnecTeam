@@ -1,7 +1,5 @@
 package com.l7.connecteam.utility;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
