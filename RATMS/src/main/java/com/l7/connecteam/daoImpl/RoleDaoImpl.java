@@ -48,8 +48,7 @@ public class RoleDaoImpl implements RoleDao {
 				featureObj.setFeatureId(result_s.getInt("feature_id"));
 				featureObj.setFeatureName(result_s.getString("feature_name"));
 				featureObj.setModuleId(result_s.getInt("module_id"));
-				featureObj.setCreationDate(result_s.getDate("creation_date"));
-				featureObj.setActiveStatus(result_s.getInt("active_status"));
+				featureObj.setModuleName(result_s.getString("module_name"));
 				featureList.add(featureObj);
 			}
 		} catch (SQLException e) {
