@@ -372,15 +372,11 @@ public class TrainingGroupDaoImpl implements TrainingGroupDao {
 
 		return status;
 	}
-
-	public static void main(String[] args) {
-		TrainingGroupDaoImpl obj = new TrainingGroupDaoImpl();
-		try {
-			int status = obj.addcoursePlan(1, "E:\\Git\\Project\\L7ConnecTeam\\L7ConnecTeam");
-			System.out.println(status + " row(s) updated");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	/*
+	 * public static void main(String[] args) { TrainingGroupDaoImpl obj = new
+	 * TrainingGroupDaoImpl(); try { int status = obj.addcoursePlan(1,
+	 * "E:\\Git\\Project\\L7ConnecTeam\\L7ConnecTeam"); System.out.println(status +
+	 * " row(s) updated"); } catch (SQLException e) { e.printStackTrace(); } }
+	 */
 
 }
