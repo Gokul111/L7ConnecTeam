@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
-	<display-name>L7ConnecTeamUI</display-name>
+	<display-name>RATMS</display-name>
 	<welcome-file-list>
 		<welcome-file>loginServlet</welcome-file>
 	</welcome-file-list>
@@ -11,4 +11,8 @@
 		<exception-type>java.lang.Exception</exception-type>
 		<location>/homeError.jsp</location>
 	</error-page>
+ <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+    <param-value>com.l7.i18n.Messages</param-value>
+</context-param>
 </web-app>
