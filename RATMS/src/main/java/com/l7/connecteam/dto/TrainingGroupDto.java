@@ -8,6 +8,7 @@ public class TrainingGroupDto {
 	private Date trainStartDate;
 	private Date trainEndDate;
 	private String CoursePlanPath;
+	private String trainType;
 	private int typeID;
 	private int activeStatus;
 	public String getTrainGroupName() {
@@ -52,11 +53,17 @@ public class TrainingGroupDto {
 	public void setActiveStatus(int activeStatus) {
 		this.activeStatus = activeStatus;
 	}
+	public String getTrainType() {
+		return trainType;
+	}
+	public void setTrainType(String trainType) {
+		this.trainType = trainType;
+	}
 	@Override
 	public String toString() {
 		return "TrainingGroup [trainGroupID=" + trainGroupID + ", trainGroupName=" + trainGroupName
 				+ ", trainStartDate=" + trainStartDate + ", trainEndDate=" + trainEndDate + ", CoursePlanPath="
-				+ CoursePlanPath + ", typeID=" + typeID + ", activeStatus=" + activeStatus + "]";
+				+ CoursePlanPath + ", trainType=" + trainType + "]";
 	}
 	
 }

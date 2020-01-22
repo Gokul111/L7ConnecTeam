@@ -1,8 +1,10 @@
 package com.l7.connecteam.serviceImpl;
 
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import java.util.List;
 
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 import com.l7.connecteam.daoImpl.TrainingGroupDaoImpl;
 import com.l7.connecteam.dto.TrainingGroupDto;
 import com.l7.connecteam.dto.UserDto;
@@ -14,7 +16,8 @@ import com.l7.connecteam.service.TrainingGroupService;
  * Implements business logic for training group related operations
  */
 public class TrainingGroupServiceImpl implements TrainingGroupService{
-	Logger logger = Logger.getLogger(TrainingGroupServiceImpl.class.getName());
+	//private static final Logger LOGGER = LogManager.getLogger(TrainingGroupServiceImpl.class);
+
 	private TrainingGroupDaoImpl trainImplObj=new TrainingGroupDaoImpl();
 	
 	/**
@@ -40,14 +43,14 @@ public class TrainingGroupServiceImpl implements TrainingGroupService{
 	public TrainingGroupDto ifTrainingGroupExists(TrainingGroupDto trainDataObj, UserDto userDataObj) throws UIException, SQLException {
 		trainDataObj=trainImplObj.ifTrainingGroupExists(trainDataObj);
 		if (trainDataObj.getTrainGroupID() != 0) {
-			logger.info(
-					"TrainingGroup with TrainingGroupname " + trainDataObj.getTrainGroupName() + " already exists");
+			//LOGGER.info(
+				//	"TrainingGroup with TrainingGroupname " + trainDataObj.getTrainGroupName() + " already exists");
 			
 			Boolean ifRelExists = setUserTrainingRel(userDataObj, trainDataObj);
 			if (ifRelExists == true) {
-				logger.info("User training group relation created");
+				//LOGGER.info("User training group relation created");
 			} else {
-				logger.info("User training group already exists");
+				//LOGGER.info("User training group already exists");
 			}
 
 			return trainDataObj;
@@ -68,5 +71,30 @@ public class TrainingGroupServiceImpl implements TrainingGroupService{
 	public boolean setUserTrainingRel(UserDto userDataObj, TrainingGroupDto trainDataObj) throws UIException, SQLException {
 		Boolean isRelSet=trainImplObj.setUserTrainingRel(userDataObj,trainDataObj.getTrainGroupID());
 		return isRelSet;
+	}
+
+	public TrainingGroupDto updateTrainingGroup(TrainingGroupDto trainDataObj) throws UIException, SQLException {
+		TrainingGroupDto trainData=trainImplObj.updateTrainingGroup(trainDataObj);
+		return trainData;
+	}
+
+	public TrainingGroupDto createTrainingGroup(TrainingGroupDto trainDataObj) throws UIException, SQLException {
+		TrainingGroupDto trainData=trainImplObj.createTrainingGroup(trainDataObj);
+		return trainData;
+	}
+
+	public boolean deleteTrainingGroup(TrainingGroupDto trainDataObj) throws UIException, SQLException {
+		Boolean deleteStatus=trainImplObj.deleteTrainingGroup(trainDataObj);
+		return deleteStatus;
+	}
+
+	public List<TrainingGroupDto> viewAllTrainingGroup() throws UIException, SQLException {
+		List<TrainingGroupDto> trainData=trainImplObj.viewAllTrainingGroup();
+		return trainData;
+	}
+
+	public TrainingGroupDto viewTrainingGroup(TrainingGroupDto trainDataObj) throws UIException, SQLException {
+		TrainingGroupDto trainData=trainImplObj.viewTrainingGroup(trainDataObj);
+		return trainData;
 	}
 }
