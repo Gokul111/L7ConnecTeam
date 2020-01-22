@@ -13,3 +13,12 @@ RATMSBuild/bin/.project
 .../bin/.settings/org.eclipse.m2e.core.prefs
 **/.project
 **/*.class
+**/.settings/**
+RATMSWeb/.settings/
+RATMSWeb/target/
+RATMSBuild/.settings/
+RATMS/.settings/
+RATMS/target/
+RATMS/.project
+RATMSBuild/.project
+RATMSWeb/.project
