@@ -20,6 +20,7 @@ public class MasterExcel {
 	private int Assessment_maxMarks;
 	private int Assessment_score;
 	private String Assessment_status;
+	private int rowNumber;
 
 	/**
 	 * @return
@@ -227,6 +228,15 @@ public class MasterExcel {
 	 */
 	public void setAssessment_status(String assessment_status) {
 		Assessment_status = assessment_status;
+	}
+	
+
+	public int getRowNumber() {
+		return rowNumber;
+	}
+
+	public void setRowNumber(int rowNumber) {
+		this.rowNumber = rowNumber;
 	}
 
 	/**

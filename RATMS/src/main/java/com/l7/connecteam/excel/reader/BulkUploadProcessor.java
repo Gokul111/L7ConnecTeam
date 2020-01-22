@@ -45,7 +45,8 @@ import com.l7.connecteam.utility.InputFileManager;
 
 /**
  * Bridges data read from excel to respective DB Controllers
- * @author soumya.raj 
+ * 
+ * @author soumya.raj
  */
 public class BulkUploadProcessor {
 	String excelFilePath = null;
@@ -87,28 +88,37 @@ public class BulkUploadProcessor {
 
 	/**
 	 * @throws UIException
-	 * @throws SQLException 
-	 * Transfers data read from Master_Data.xlsx to DB
+	 * @throws SQLException Transfers data read from Master_Data.xlsx to DB
 	 *                      controllers
 	 */
 	public void uploadMasterExcel() throws UIException, SQLException {
-		String excelFilePath = "E:\\programs\\L7ConnecTeam\\Assessment Details\\"
+		String excelFilePath = "excelFilePath"
 				+ InputFileManager.getFileName("masterFile");
 		List<MasterExcel> MasterList = serviceObj.validateMasterExcel(excelFilePath);
+		
+		//serviceObj.validateExcelData();
+		
 		for (MasterExcel mObj : MasterList) {
 			userDataObj = new UserDto();
-			userDataObj.setEmployeeId(mObj.getEmpId());
-			userDataObj.setUsername(mObj.getEmpName());
+
+			userDataObj.setEmployeeId(mObj.getEmpId().trim());
+
+			userDataObj.setUsername(mObj.getEmpName().trim());
+
 			userList.add(userDataObj);
 
 			batchDataObj = new BatchDto();
-			batchDataObj.setBatchName(mObj.getBatchName());
+
+			batchDataObj.setBatchName(mObj.getBatchName().trim());
+
 			batchDataObj.setStartDate(mObj.getBatchStartDate());
 			batchDataObj.setEndDate(mObj.getBatchEndDate());
 			batchList.add(batchDataObj);
 
 			trainDataObj = new TrainingGroupDto();
-			trainDataObj.setTrainGroupName(mObj.getTrainingGroupName());
+
+			trainDataObj.setTrainGroupName(mObj.getTrainingGroupName().trim());
+
 			trainDataObj.setTrainStartDate(mObj.getBatchStartDate());
 			trainDataObj.setTrainEndDate(mObj.getBatchEndDate());
 			trainList.add(trainDataObj);
@@ -124,6 +134,7 @@ public class BulkUploadProcessor {
 					assessNames.add(mObj.getAssessmentName());
 				}
 			}
+
 			maxMarks.add(mObj.getAssessment_maxMarks());
 			marks.add(mObj.getAssessment_score());
 			status.add(mObj.getAssessment_status());
@@ -187,7 +198,6 @@ public class BulkUploadProcessor {
 			assessContObj.setAssessUserRel(assessmentDto, userDto.next(), assessType.next(), mark.next(),
 					statusIterate.next(), maxMark.next());
 		}
-
 	}
 
 	/**
@@ -199,14 +209,16 @@ public class BulkUploadProcessor {
 	 */
 	public void uploadCriteriaExcel(List<TechnologyDto> techList) throws UIException, SQLException {
 		Iterator<TechnologyDto> techIterator = criteriaTechList.iterator();
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
 		while (techIterator.hasNext()) {
 			int fileNumber = 1;
 			for (String assessment : assessNames) {
 				TechnologyDto criteriaTech = techIterator.next();
-				excelFilePath = "E:\\programs\\L7ConnecTeam\\Assessment Details\\" + assessment.trim().replace(" ", "")
+				excelFilePath = "excelFilePath" + assessment.trim().replace(" ", "")
 						+ InputFileManager.getFileName("criteriaFile");
-				List<CriteriaExcel> criteriaList = serviceObj.validateCriteriaExcel(excelFilePath, fileNumber);
+				List<CriteriaExcel> criteriaList = serviceObj.validateCriteriaExcel(excelFilePath, fileNumber,
+						timeStamp);
 				fileNumber++;
 				CriteriaController criteriaConObj = new CriteriaController();
 				for (CriteriaExcel cObj : criteriaList) {
@@ -219,7 +231,6 @@ public class BulkUploadProcessor {
 
 			}
 		}
-
 	}
 
 	/**
@@ -237,7 +248,7 @@ public class BulkUploadProcessor {
 			FileInputStream inputStream = null;
 			Sheet nextSheet = null;
 			try {
-				excelFilePath = "E:\\programs\\L7ConnecTeam\\Assessment Details\\" + assessment.trim().replace(" ", "")
+				excelFilePath = "excelFilePath" + assessment.trim().replace(" ", "")
 						+ InputFileManager.getFileName("evaluationFile");
 				inputStream = new FileInputStream(new File(excelFilePath));
 				if (excelFilePath.endsWith("xlsx")) {
@@ -245,7 +256,7 @@ public class BulkUploadProcessor {
 				} else if (excelFilePath.endsWith("xls")) {
 					workbook = new HSSFWorkbook(inputStream);
 				} else {
-					throw new UIException("An evalution file is not in excel format");
+					throw new UIException("An evaluation file is not in excel format");
 				}
 				Iterator<Sheet> iteratorSheet = workbook.iterator();
 				while (iteratorSheet.hasNext()) {
@@ -279,7 +290,7 @@ public class BulkUploadProcessor {
 							String fileContent = timeStamp + "\t : Value mismatch in " + assessment
 									+ " evaluation file. Assessment marks not entered. \n";
 							FileOutputStream outputStream = new FileOutputStream(
-									"E:\\Assessment upload survey\\ExcelUploadInfo.txt", true);
+									"assementUploadLogFileName", true);
 							byte[] strToBytes = fileContent.getBytes();
 							outputStream.write(strToBytes);
 							outputStream.close();
@@ -293,10 +304,10 @@ public class BulkUploadProcessor {
 
 			} catch (FileNotFoundException e) {
 				logger.info(e.getMessage());
-				throw new UIException("Evaluation file missing. Please upload again");
+				throw new UIException("Evaluation file missing. Please upload again", e);
 			} catch (IOException e) {
 				logger.info(e.getMessage());
-				throw new UIException("Upload Action failed. Try again");
+				throw new UIException("Upload Action failed. Try again", e);
 			} finally {
 				if (workbook != null) {
 					try {
@@ -304,7 +315,7 @@ public class BulkUploadProcessor {
 						inputStream.close();
 					} catch (IOException e) {
 						logger.info(e.getMessage());
-						throw new UIException("Upload Action failed. Try again");
+						throw new UIException("Upload Action failed. Try again", e);
 
 					}
 
@@ -314,5 +325,9 @@ public class BulkUploadProcessor {
 
 		}
 	}
+
+	
+
+	
 
 }

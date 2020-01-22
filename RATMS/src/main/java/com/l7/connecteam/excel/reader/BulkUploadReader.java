@@ -20,27 +20,29 @@ import com.l7.connecteam.exception.UIException;
 
 /**
  * Reads the uploaded excel files
+ * 
  * @author soumya.raj
  */
 public class BulkUploadReader {
 	BulkUploadService validObj = new BulkUploadService();
-	
+
 	Logger logger = Logger.getLogger(BulkUploadReader.class.getName());
-	String timeStamp=new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+	String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
 	/**
 	 * @param iteratorRow
 	 * @return
-	 * @throws UIException
-	 * Reads uploaded master excel file validating each cell
+	 * @throws UIException Reads uploaded master excel file validating each cell
 	 */
 	public List<MasterExcel> readFromMasterExcel(Iterator<Row> iteratorRow) throws UIException {
 		List<MasterExcel> MasterList = new ArrayList<MasterExcel>();
+		int count = 1;
+		MasterExcel MasterObj = new MasterExcel();
 		try {
 			while (iteratorRow.hasNext()) {
 				Row nextRow = iteratorRow.next();
 				Iterator<Cell> iteratorCell = nextRow.iterator();
-				MasterExcel MasterObj = new MasterExcel();
+
 				while (iteratorCell.hasNext()) {
 					Boolean recordValid = true;
 					int cellNo = 0;
@@ -52,25 +54,26 @@ public class BulkUploadReader {
 						recordValid = false;
 						cellNo = cell.getColumnIndex() + 1;
 					}
-					
+
 					cell = iteratorCell.next();
 					type = cell.getCellType();
-					if (type == CellType.STRING  && cell != null) {
+					if (type == CellType.STRING && cell != null) {
 						MasterObj.setEmpName(cell.getStringCellValue().trim());
 					} else {
 						recordValid = false;
 						cellNo = cell.getColumnIndex() + 1;
 					}
-					
+
 					cell = iteratorCell.next();
 					type = cell.getCellType();
 					if (type == CellType.STRING && cell != null) {
+
 						MasterObj.setBatchName(cell.getStringCellValue().trim());
 					} else {
 						recordValid = false;
 						cellNo = cell.getColumnIndex() + 1;
 					}
-					
+
 					cell = iteratorCell.next();
 					type = cell.getCellType();
 					if (type == CellType.NUMERIC && cell != null) {
@@ -154,35 +157,40 @@ public class BulkUploadReader {
 						cellNo = cell.getColumnIndex() + 1;
 					}
 					if (recordValid == false) {
-						String fileContent=timeStamp+"\t : Record value mismatch in master file at row "+nextRow.getRowNum()+" cell "+cellNo+". \n";
-						FileOutputStream outputStream = new FileOutputStream("E:\\Assessment upload survey\\ExcelUploadInfo.txt",true);
-					    byte[] strToBytes = fileContent.getBytes();
-					    outputStream.write(strToBytes);
-					    outputStream.close();
+						String fileContent = timeStamp + "\t : Record value mismatch in master file at row "
+								+ nextRow.getRowNum() + " cell " + cellNo + ". \n";
+						FileOutputStream outputStream = new FileOutputStream(
+								"assementUploadLogFileName", true);
+						byte[] strToBytes = fileContent.getBytes();
+						outputStream.write(strToBytes);
+						outputStream.close();
+					} else {
+						MasterObj.setRowNumber(count);
+						count++;
+						MasterList.add(MasterObj);
 					}
-					else {
-					MasterList.add(MasterObj);
-					}
+
 				}
 			}
+
 		} catch (NoSuchElementException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Manipulated Excel sheet");
+			throw new UIException("Manipulated Excel sheet", e);
 		} catch (IOException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Error writing ExcelUploadInfo.txt log file");
-		} 
+			throw new UIException("Error writing ExcelUploadInfo.txt log file", e);
+		}
 		return MasterList;
 	}
-	
+
 	/**
 	 * @param iteratorRow
 	 * @return
-	 * @throws UIException
-	 * Reads uploaded criteria excel files validating each cell
+	 * @throws UIException Reads uploaded criteria excel files validating each cell
 	 */
 	public List<CriteriaExcel> readFromCriteriaExcel(Iterator<Row> iteratorRow) throws UIException {
 		List<CriteriaExcel> criteriaList = new ArrayList<CriteriaExcel>();
+		int count = 1;
 		try {
 			while (iteratorRow.hasNext()) {
 				Row nextRow = iteratorRow.next();
@@ -202,7 +210,7 @@ public class BulkUploadReader {
 					cell = iteratorCell.next();
 					type = cell.getCellType();
 					if (type == CellType.NUMERIC && cell != null) {
-						criteriaObj.setCriteria_maxscore((int)cell.getNumericCellValue());
+						criteriaObj.setCriteria_maxscore((int) cell.getNumericCellValue());
 					} else {
 						recordValid = false;
 						cellNo = cell.getColumnIndex() + 1;
@@ -210,30 +218,31 @@ public class BulkUploadReader {
 					cell = iteratorCell.next();
 					type = cell.getCellType();
 					if (type == CellType.NUMERIC && cell != null) {
-						criteriaObj.setCriteria_minscore((int)cell.getNumericCellValue());
+						criteriaObj.setCriteria_minscore((int) cell.getNumericCellValue());
 					} else {
 						recordValid = false;
 						cellNo = cell.getColumnIndex() + 1;
 					}
 					if (recordValid == false) {
-						String fileContent=timeStamp+"\t : Record value mismatch in criteria file at row "+nextRow.getRowNum()+" cell "+cellNo+". \n";
-						FileOutputStream outputStream = new FileOutputStream("E:\\Assessment upload survey\\ExcelUploadInfo.txt",true);
-					    byte[] strToBytes = fileContent.getBytes();
-					    outputStream.write(strToBytes);
-					    outputStream.close();
-					}
-					else {
-					criteriaList.add(criteriaObj);
+						String fileContent = timeStamp + "\t : Record value mismatch in criteria file at row "
+								+ nextRow.getRowNum() + " cell " + cellNo + ". \n";
+						FileOutputStream outputStream = new FileOutputStream(
+								"assementUploadLogFileName", true);
+						byte[] strToBytes = fileContent.getBytes();
+						outputStream.write(strToBytes);
+						outputStream.close();
+					} else {
+						criteriaObj.setCount(count);
+						count++;
+						criteriaList.add(criteriaObj);
 					}
 				}
 			}
-//		} catch (IllegalStateException e) {
-//			logger.info(e.getMessage());
-//			throw new UIException("Manipulated Excel sheet");
+
 		} catch (IOException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Upload complete. Log file writing failed.");
+			throw new UIException("Upload complete. Log file writing failed.", e);
 		}
-		return criteriaList; 
+		return criteriaList;
 	}
 }

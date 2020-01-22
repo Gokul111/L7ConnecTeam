@@ -25,15 +25,12 @@ import com.l7.connecteam.exception.UIException;
 
 /**
  * Acts as validation layer for BulkUploadReader
- * @author soumya.raj 
+ * 
+ * @author soumya.raj
  */
 public class BulkUploadService {
 	Logger logger = Logger.getLogger(BulkUploadService.class.getName());
-	String timeStamp=new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-
-	int fileNumber = 0;
 	Sheet nextSheet = null;
-	List<String> noOfRowsRead = new ArrayList<String>();
 
 	/**
 	 * @param excelFilePath
@@ -42,10 +39,10 @@ public class BulkUploadService {
 	 */
 	public Iterator<Row> validateExcel(String excelFilePath) throws UIException {
 		Workbook workbook = null;
-		FileInputStream inputStream = null;
-		try {
-			fileNumber++;
-			inputStream = new FileInputStream(new File(excelFilePath));
+
+		Sheet nextSheet = null;
+		try (FileInputStream inputStream = new FileInputStream(new File(excelFilePath));) {
+
 			if (excelFilePath.endsWith("xlsx")) {
 				workbook = new XSSFWorkbook(inputStream);
 			} else if (excelFilePath.endsWith("xls")) {
@@ -70,20 +67,20 @@ public class BulkUploadService {
 						headers.add(header);
 					}
 				}
-				Boolean ifValid = validateByHeader(excelFilePath, headers);
-				if (!ifValid) {
+				boolean isValid = validateByHeader(excelFilePath, headers);
+				if (!isValid) {
 					throw new UIException("Columns missing or header mismatch among uploaded files");
 				}
 				return iteratorRow;
 			}
 		} catch (IOException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Missing required files among uploaded. Please upload again");
+			throw new UIException("Missing required files among uploaded. Please upload again", e);
 		} finally {
 			if (workbook != null) {
 				try {
 					workbook.close();
-					inputStream.close();
+
 				} catch (IOException e) {
 					logger.info(e.getMessage());
 				}
@@ -121,28 +118,28 @@ public class BulkUploadService {
 	/**
 	 * @param excelFilePath
 	 * @return
-	 * @throws UIException 
-	 * Validates master excel and bridges master reader in
+	 * @throws UIException Validates master excel and bridges master reader in
 	 *                     BulkUploadReader
 	 */
 	public List<MasterExcel> validateMasterExcel(String excelFilePath) throws UIException {
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+
 		BulkUploadReader readerObj = new BulkUploadReader();
 		List<MasterExcel> masterList = null;
 		Iterator<Row> iteratorRow = validateExcel(excelFilePath);
 		masterList = readerObj.readFromMasterExcel(iteratorRow);
+		validateMasterExcelData();
+		new File("assessmentUploadArchivePath").mkdir();
+		String fileContent = "\n \n" + timeStamp + "\t: " + masterList.size() + " rows read out of total "
+				+ (nextSheet.getPhysicalNumberOfRows() - 1) + " rows from master file\n";
 
-		new File("E:\\Assessment upload survey").mkdir();
-		String fileContent = "\n \n"+ timeStamp + "\t: "+ masterList.size() + " rows read out of total " + (nextSheet.getPhysicalNumberOfRows() - 1)
-				+ " rows from master file\n";
-		FileOutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream("E:\\Assessment upload survey\\ExcelUploadInfo.txt", true);
+		try (FileOutputStream outputStream = new FileOutputStream("assementUploadLogFileName", true);) {
 			byte[] strToBytes = fileContent.getBytes();
 			outputStream.write(strToBytes);
-			outputStream.close();
+
 		} catch (IOException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Error writing ExcelUploadInfo.txt log file");
+			throw new UIException("Error writing ExcelUploadInfo.txt log file", e);
 		}
 		return masterList;
 	}
@@ -154,22 +151,129 @@ public class BulkUploadService {
 	 * @throws UIException Validates criteria excel and bridges criteria reader in
 	 *                     BulkUploadReader
 	 */
-	public List<CriteriaExcel> validateCriteriaExcel(String excelFilePath, int fileNumber) throws UIException {
+	public List<CriteriaExcel> validateCriteriaExcel(String excelFilePath, int fileNumber, String timeStamp)
+			throws UIException {
 		BulkUploadReader readerObj = new BulkUploadReader();
+
 		List<CriteriaExcel> criteriaList = null;
 		Iterator<Row> iteratorRow = validateExcel(excelFilePath);
 		criteriaList = readerObj.readFromCriteriaExcel(iteratorRow);
-		String fileContent =  timeStamp + "\t: "+ criteriaList.size() + " rows read out of total "+ (nextSheet.getPhysicalNumberOfRows() - 1) + " rows from criteria file " + fileNumber+"\n";
-		FileOutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream("E:\\Assessment upload survey\\ExcelUploadInfo.txt", true);
+		validateCriteriaExcelData();
+		String fileContent = timeStamp + "\t: " + criteriaList.size() + " rows read out of total "
+				+ (nextSheet.getPhysicalNumberOfRows() - 1) + " rows from criteria file " + fileNumber + "\n";
+
+		try (FileOutputStream outputStream = new FileOutputStream("assementUploadLogFileName", true);) {
+
 			byte[] strToBytes = fileContent.getBytes();
 			outputStream.write(strToBytes);
-			outputStream.close();
+
 		} catch (IOException e) {
 			logger.info(e.getMessage());
-			throw new UIException("Error writing ExcelUploadInfo.txt log file");
+			throw new UIException("Error writing ExcelUploadInfo.txt log file", e);
 		}
 		return criteriaList;
+	}
+
+	public void validateMasterExcelData() throws UIException {
+		MasterExcel master = new MasterExcel();
+
+		if (least(master.getBatchStartDate(), master.getBatchEndDate()).equals(master.getBatchEndDate())) {
+			throw new UIException(
+					"Start date greater than end date  master_data.xlsx at row number " + master.getRowNumber());
+
+		}
+		if (Integer.toString((int) master.getAssessment_maxMarks()) == null || master.getAssessment_maxMarks() <= 0) {
+
+			throw new UIException(
+					"Assessment Max marks is invalid and minimum should be greater than 0 in  master_data.xlsx at row number "
+							+ master.getRowNumber());
+
+		}
+		if (Integer.toString((int) master.getAssessment_minMarks()) == null || master.getAssessment_minMarks() <= 0) {
+
+			throw new UIException(
+					"Assessment Min marks is invalid and minimum should be greater than 0 in  master_data.xlsx at row number "
+							+ master.getRowNumber());
+
+		}
+		if (Integer.toString((int) master.getAssessment_score()) == null || master.getAssessment_score() < 0) {
+
+			throw new UIException(
+					"Assessment score is invalid and minimum should be greater than or equal to 0 in  master_data.xlsx at row number "
+							+ master.getRowNumber());
+
+		}
+		if (master.getAssessment_score() > master.getAssessment_maxMarks()) {
+
+			throw new UIException("Assessment score is greater than max score in master_data.xlsx at row number "
+					+ master.getRowNumber());
+
+		}
+		if (master.getAssessment_minMarks() > master.getAssessment_maxMarks()) {
+
+			throw new UIException(
+					"Assessment minimum score is greater than max score in master_data.xlsx at row number "
+							+ master.getRowNumber());
+
+		}
+
+	}
+
+	public void validateCriteriaExcelData() throws UIException {
+		CriteriaExcel criteriaObj = new CriteriaExcel();
+
+		if (criteriaObj.getCriteriaName().trim() != null
+				&& criteriaObj.getCriteriaName().trim().toLowerCase().equals("penalty")) {
+
+			if (Integer.toString((int) criteriaObj.getCriteria_maxscore()) == null
+					|| criteriaObj.getCriteria_maxscore() > 0) {
+
+				throw new UIException("Criteria max score is should be lower in at row number " + criteriaObj.getCount()
+						+ " for criteria " + criteriaObj.getCriteriaName().trim());
+
+			}
+			if (Integer.toString((int) criteriaObj.getCriteria_minscore()) == null
+					|| criteriaObj.getCriteria_minscore() > 0) {
+
+				throw new UIException("Criteria min score is should be lower in at row number " + criteriaObj.getCount()
+						+ " for criteria" + criteriaObj.getCriteriaName().trim());
+
+			}
+
+			if (criteriaObj.getCriteria_minscore() > criteriaObj.getCriteria_maxscore()) {
+
+				throw new UIException("Criteria min score should not be greater than max score at row number "
+						+ criteriaObj.getCount());
+
+			}
+
+		} else {
+
+			if (Integer.toString((int) criteriaObj.getCriteria_maxscore()) == null
+					|| criteriaObj.getCriteria_maxscore() <= 0) {
+
+				throw new UIException("Criteria max Score is invalid in at row number " + criteriaObj.getCount()
+						+ " for criteria " + criteriaObj.getCriteriaName().trim());
+
+			}
+			if (Integer.toString((int) criteriaObj.getCriteria_minscore()) == null) {
+
+				throw new UIException("Criteria min score is invalid in at row number " + criteriaObj.getCount()
+						+ " for criteria " + criteriaObj.getCriteriaName().trim());
+
+			}
+
+			if (criteriaObj.getCriteria_minscore() > criteriaObj.getCriteria_maxscore()) {
+
+				throw new UIException("Criteria min score should not be greater than max score at row number "
+						+ criteriaObj.getCount());
+
+			}
+
+		}
+	}
+
+	public static Date least(Date a, Date b) {
+		return a == null ? b : (b == null ? a : (a.before(b) ? a : b));
 	}
 }

@@ -8,6 +8,7 @@ public class CriteriaExcel {
 	private String criteriaName;
 	private int criteria_maxscore;
 	private int criteria_minscore;
+	private int count;
 
 	/**
 	 * @return Returns an occurrence of constructed criteria name
@@ -52,6 +53,15 @@ public class CriteriaExcel {
 	 */
 	public void setCriteria_minscore(int criteria_minscore) {
 		this.criteria_minscore = criteria_minscore;
+	}
+	
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	/**
