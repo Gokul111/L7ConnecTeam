@@ -6,10 +6,15 @@
 <head>
 <meta charset="ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>L7ConnecTeam_Login</title>
+<title>RATMS Login</title>
 
 <link rel="stylesheet" type="text/css" href="CSS/util.css">
 <link rel="stylesheet" type="text/css" href="CSS/main.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="JS/index.js"></script>
+
+
 </head>
 <body>
 	<div class="container">
@@ -20,35 +25,38 @@
 					<span class="login-form-title"> ConnecTeam Login </span>
 				</div>
 
-				<form class="login100-form" action="loginServlet" method="POST">
+				<form class="login100-form">
+
+					<div id="error"></div>
 
 					<div class="wrap-input m-b-26">
-						<span class="label-input">Username</span> <input class="input"
-							type="text" name="username" placeholder="Enter username">
-						<span class="focus-input"></span>
+						<span class="label-input">Username</span> <input id="username"
+							class="input" type="text" name="username"
+							placeholder="Enter username"> <span class="focus-input"></span>
 					</div>
 
 					<div class="wrap-input m-b-18">
-						<span class="label-input">Password</span> <input class="input"
-							type="password" name="password" placeholder="Enter password">
-						<span class="focus-input"></span>
+						<span class="label-input">Password</span> <input id="password"
+							class="input" type="password" name="password"
+							placeholder="Enter password"> <span class="focus-input"></span>
 					</div>
 
 					<div class="p-b-30">
 						<div class="form-checkbox">
-							<input class="input-checkbox" type="checkbox" name="rememberMe">
-							<label class="label-checkbox" for="ckb"> Remember me </label>
+							<input id="rememberMe" class="input-checkbox" type="checkbox" name="rememberMe" value="rememberMe">
+							<label class="label-checkbox" for="ckb">Remember me</label>
 						</div>
 
 					</div>
 
+
 					<div class="container-login-form-btn">
-						<button class="login-form-btn">Login</button>
+						<input type="button" id="getin" class="login-form-btn"
+							value="LOGIN">
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-</body>
 </body>
 </html>
