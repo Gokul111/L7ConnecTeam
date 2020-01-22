@@ -25,3 +25,12 @@ RATMSWeb/.project
 RATMS/bin/
 RATMSBuild/bin/
 RATMSWeb/bin/
+RATMSWeb/.settings/org.eclipse.core.resources.prefs 
+RATMSWeb/.settings/org.eclipse.jdt.core.prefs       
+RATMSWeb/.settings/org.eclipse.m2e.core.prefs
+RATMSBuild/.settings/org.eclipse.core.resources.prefs 
+RATMSBuild/.settings/org.eclipse.jdt.core.prefs       
+RATMSBuild/.settings/org.eclipse.m2e.core.prefs
+RATMS/.settings/org.eclipse.core.resources.prefs 
+RATMS/.settings/org.eclipse.jdt.core.prefs       
+RATMS/.settings/org.eclipse.m2e.core.prefs
