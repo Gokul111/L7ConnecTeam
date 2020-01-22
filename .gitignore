@@ -22,3 +22,6 @@ RATMS/target/
 RATMS/.project
 RATMSBuild/.project
 RATMSWeb/.project
+RATMS/bin/
+RATMSBuild/bin/
+RATMSWeb/bin/
